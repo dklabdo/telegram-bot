@@ -7,7 +7,7 @@ export async function POST(req, res) {
   if (req.method === "POST") {
     const { message } = req.body;
 
-    if (message == "/start") {
+    
       const chatId = message.chat.id;
       const username = message.from.username || "unknown";
 
@@ -33,7 +33,7 @@ export async function POST(req, res) {
         console.error("Error handling webhook:", error);
         return res.status(500).json({ success: false, error: error.message });
       }
-    }
+    
     return res.status(400).json({ success: false, error: "Invalid request" });
   }
 
