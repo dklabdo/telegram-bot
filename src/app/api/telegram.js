@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { message } = req.body;
 
-    if (message) {
+    if (message == "/start") {
       const chatId = message.chat.id;
       const username = message.from.username || "unknown";
 
