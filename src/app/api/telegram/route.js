@@ -1,8 +1,9 @@
 // pages/api/telegram.js
-import {db} from "../../../lib/firebaseAdmin"
+import {db} from "../../../../lib/firebaseAdmin.js"
 import axios from "axios";
 
-export default async function handler(req, res) {
+export async function POST(req, res) {
+    
   if (req.method === "POST") {
     const { message } = req.body;
 
@@ -39,3 +40,4 @@ export default async function handler(req, res) {
   res.setHeader("Allow", ["POST"]);
   res.status(405).end(`Method ${req.method} Not Allowed`);
 }
+
