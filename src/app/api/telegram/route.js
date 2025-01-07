@@ -31,11 +31,13 @@ export async function POST(req) {
           username,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
-        const myLink = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
+        
         // Send a welcome message
+        const myLink = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account here ${myLink}`);
       } else {
         // Inform the user they already exist
+        const myLink = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         await sendTelegramMessage(chatId, `Welcome back, ${firstName}! go to your web app account here ${myLink} `);
       }
     }
