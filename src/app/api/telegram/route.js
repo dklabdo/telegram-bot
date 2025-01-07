@@ -22,7 +22,7 @@ export async function POST(req) {
       const userSnapshot = await userDoc.get();
 
       // Check if the user is already in the database
-      if (!userSnapshot.exists) {
+      if (true) {
         // Add the user to Firestore
         await userDoc.set({
           id: chatId,
