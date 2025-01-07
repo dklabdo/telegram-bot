@@ -8,6 +8,8 @@ export async function POST(req) {
 
   // Check if the webhook contains a message
   if (body?.message) {
+    console.log(body.message);
+    
     const chatId = body.message.chat.id; // Telegram user's chat ID
     const firstName = body.message.chat.first_name || 'Unknown'; // User's first name
     const lastName = body.message.chat.last_name || ''; // Optional last name
