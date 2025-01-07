@@ -1,43 +1,55 @@
-// pages/api/telegram.js
-import {db} from "../../../../lib/firebaseAdmin.js"
-import axios from "axios";
+import { adminDb } from '../../../../lib/firebaseAdmin';
+import admin from 'firebase-admin';
 
-export async function POST(req, res) {
-    
-  if (req.method === "POST") {
-    const { message } = req.body;
+import { NextResponse } from 'next/server';
 
-    
-      const chatId = message.chat.id;
-      const username = message.from.username || "unknown";
+export async function POST(req) {
+  const body = await req.json();
 
-      try {
-        // Save Telegram ID and username to Firestore
-        await db.collection("users").doc(chatId.toString()).set({
-          telegramId: chatId,
-          username : username,
-          
+  // Check if the webhook contains a message
+  if (body?.message) {
+    const chatId = body.message.chat.id; // Telegram user's chat ID
+    const firstName = body.message.chat.first_name || 'Unknown'; // User's first name
+    const lastName = body.message.chat.last_name || ''; // Optional last name
+    const username = body.message.chat.username || 'No username'; // Telegram username
+    const text = body.message.text; // Text of the message
+
+    // Check if the user sent the "/start" command
+    if (text === '/start') {
+      const userDoc = adminDb.collection('users').doc(chatId.toString());
+      const userSnapshot = await userDoc.get();
+
+      // Check if the user is already in the database
+      if (!userSnapshot.exists) {
+        // Add the user to Firestore
+        await userDoc.set({
+          id: chatId,
+          firstName,
+          lastName,
+          username,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        // Respond to the user via Telegram
-        await axios.post(
-          `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-          {
-            chat_id: chatId,
-            text: "Your Telegram ID has been saved! nmot 3lik omri mwa777",
-          }
-        );
-
-        return res.status(200).json({ success: true });
-      } catch (error) {
-        console.error("Error handling webhook:", error);
-        return res.status(500).json({ success: false, error: error.message });
+        // Send a welcome message
+        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created.`);
+      } else {
+        // Inform the user they already exist
+        await sendTelegramMessage(chatId, `Welcome back, ${firstName}!`);
       }
-    
-    return res.status(400).json({ success: false, error: "Invalid request" });
+    }
   }
 
-  res.setHeader("Allow", ["POST"]);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
+  return NextResponse.json({ success: true });
 }
 
+// Function to send messages back to the Telegram bot
+async function sendTelegramMessage(chatId, text) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text }),
+  });
+}
