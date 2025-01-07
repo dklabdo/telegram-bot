@@ -32,18 +32,17 @@ export async function POST(req) {
           username,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
-
+        const redirectUrl = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         // Send a welcome message
-        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created.`);
+        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account here ${redirectUrl}`);
       } else {
         // Inform the user they already exist
-        await sendTelegramMessage(chatId, `Welcome back, ${firstName}!`);
+        await sendTelegramMessage(chatId, `Welcome back, ${firstName}! go to your web app account here ${redirectUrl} `);
       }
     }
   }
 
 
-  redirect('/')
 
   return NextResponse.json({ success: true });
 
