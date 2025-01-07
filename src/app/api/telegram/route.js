@@ -1,5 +1,6 @@
 import { adminDb } from '../../../../lib/firebaseAdmin';
 import admin from 'firebase-admin';
+import { redirect } from 'next/dist/server/api-utils';
 
 import { NextResponse } from 'next/server';
 
@@ -22,7 +23,7 @@ export async function POST(req) {
       const userSnapshot = await userDoc.get();
 
       // Check if the user is already in the database
-      if (true) {
+      if (!userSnapshot.exists) {
         // Add the user to Firestore
         await userDoc.set({
           id: chatId,
@@ -41,7 +42,12 @@ export async function POST(req) {
     }
   }
 
+
+  redirect('/')
+
   return NextResponse.json({ success: true });
+
+  
 }
 
 // Function to send messages back to the Telegram bot
