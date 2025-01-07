@@ -1,6 +1,5 @@
 import { adminDb } from '../../../../lib/firebaseAdmin';
 import admin from 'firebase-admin';
-import { redirect } from 'next/dist/server/api-utils';
 
 import { NextResponse } from 'next/server';
 
@@ -32,12 +31,12 @@ export async function POST(req) {
           username,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
-        const redirectUrl = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
+        const myLink = `http://yourdomain.com/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         // Send a welcome message
-        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account here ${redirectUrl}`);
+        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account here ${myLink}`);
       } else {
         // Inform the user they already exist
-        await sendTelegramMessage(chatId, `Welcome back, ${firstName}! go to your web app account here ${redirectUrl} `);
+        await sendTelegramMessage(chatId, `Welcome back, ${firstName}! go to your web app account here ${myLink} `);
       }
     }
   }
