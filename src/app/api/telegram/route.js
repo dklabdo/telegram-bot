@@ -34,11 +34,13 @@ export async function POST(req) {
         
         // Send a welcome message
         const myLink = `http://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
-        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account here ${myLink}`);
+        const imageUrl = "http://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
+        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account` , myLink , imageUrl);
       } else {
         // Inform the user they already exist
         const myLink = `http://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
-        await sendTelegramMessage(chatId, `Welcome back, ${firstName}! go to your web app account here ${myLink} `);
+        const imageUrl = "http://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
+        await sendTelegramMessage(chatId, `Welcome back ${firstName}!` , myLink , imageUrl);
       }
     }
   }
@@ -51,13 +53,27 @@ export async function POST(req) {
 }
 
 // Function to send messages back to the Telegram bot
-async function sendTelegramMessage(chatId, text) {
+async function sendTelegramMessage(chatId,text , webAppUrl ,imageUrl) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
   await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text }),
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: text,
+      photo : imageUrl,
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: 'Open your web app',
+              web_app: { url: webAppUrl }, // This is the key part
+            },
+          ],
+        ],
+      },
+    }),
   });
 }

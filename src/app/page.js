@@ -9,18 +9,24 @@ export default function Home() {
   const [btn, setBtn] = useState(1);
   return (
     <>
-      <main className="w-full text-white  overflow-hidden flex flex-col h-screen">
-        <div className="w-full md:h-[45%] md:scale-105 scale-[.8]  items-center flex flex-col justify-center ">
-          <div className="flex flex-col py-6 rounded-3xl md:border-[.6px] md:border-white/60 items-center gap-4 w-[80%]   ">
+      <main className="w-full text-white  overflow-hidden flex justify-start flex-col h-screen">
+        <div className="flex px-3 w-[95%]  justify-between  py-6  " >
+          <p className="text-lg " >Sayah abdel-ilah</p>
+          <p className="flex ">
+              {" "}
+              <CopyIcon size={22} /> {" "}
+            </p>
+
+        </div>
+        <div className="w-full md:h-[45%] hidden md:flex md:scale-105 scale-[.8]  items-center  flex-col justify-center ">
+          <div className="flex flex-col py-6 rounded-3xl md:border-[.6px] md:border-white/60 items-center gap-4 w-[90%]   ">
             <Image className="w-28" src={icon} alt="..." />
             <h1 className="text-3xl text-white font-bold "> 1000000400.000</h1>
-            <p className="flex gap-2 items-center">
-              {" "}
-              <CopyIcon size={19} /> 3428768434234{" "}
-            </p>
+            
           </div>
         </div>
-        <div className="flex flex-col md:overflow-hidden overflow-y-auto md:flex-row scale-90 gap-2 w-full  md:w-[95%]  h-[65%] md:h-[50%] ">
+       
+        <div className="flex flex-col  md:overflow-hidden overflow-y-auto md:flex-row px-2  gap-2 w-full  md:w-[95%]  ">
           <div className="flex flex-row  md:flex-col  p-1 gap-2 md:w-52 md:h-full  ">
             <div
               onClick={() => setBtn(1)}
@@ -81,21 +87,8 @@ function TaskLigne({value , title}) {
 function Coin({ link, data }) {
   return (
     <div className="w-full py-2 h-full flex flex-col  ">
-      <div className="py-4 hidden  w-full md:flex md:flex-row flex-col justify-between items-center px-6 md:px-8 rounded-3xl bg-black/20 ">
-        <div className="flex  items-center gap-2">
-          <p className="text-nowrap overflow-hidden    ">
-            {" "}
-            https://tm.me/qrorder/3428768434234{" "}
-          </p>
-        </div>
-        <div className="md:w-12 min-w-12 min-h-12 w-full bg-main h-12 flex justify-center items-center rounded-full  ">
-          <CopyIcon size={20} />
-        </div>
-      </div>
-      <button className="bg-main md:hidden text-white rounded-3xl w-full py-4">
-        {" "}
-        Copy affiliate link{" "}
-      </button>
+      
+      
     </div>
   );
 }
