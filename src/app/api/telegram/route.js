@@ -59,7 +59,7 @@ async function sendTelegramMessage(chatId, text, imageUrl, webAppUrl) {
   console.log("sending ... ");
   
   
-  await fetch(url, {
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -78,6 +78,11 @@ async function sendTelegramMessage(chatId, text, imageUrl, webAppUrl) {
       },
     }),
   });
+
+
+  const result = await res.json();
+  console.log("Telegram API Response:", result);
+  
 
 
 
