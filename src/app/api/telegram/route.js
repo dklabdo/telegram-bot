@@ -34,12 +34,12 @@ export async function POST(req) {
         
         // Send a welcome message
         const myLink = `https://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
-        const imageUrl = "https://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
+        const imageUrl = "https://drive.google.com/uc?id=17Kmx-T14gwhqOE0Evr-QeHuzbVSL53P1"
         await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account` , imageUrl , myLink);
       } else {
         // Inform the user they already exist
         const myLink = `https://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
-        const imageUrl = "https://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
+        const imageUrl = "https://drive.google.com/uc?id=17Kmx-T14gwhqOE0Evr-QeHuzbVSL53P1"
         await sendTelegramMessage(chatId, `Welcome back ${firstName}!` , imageUrl , myLink );
       }
     }
