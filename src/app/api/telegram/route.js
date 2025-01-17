@@ -55,7 +55,7 @@ export async function POST(req) {
 // Function to send messages back to the Telegram bot
 async function sendTelegramMessage(chatId,text , webAppUrl ,imageUrl) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+  const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
 
   await fetch(url, {
     method: 'POST',
