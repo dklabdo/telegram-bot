@@ -35,12 +35,12 @@ export async function POST(req) {
         // Send a welcome message
         const myLink = `http://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         const imageUrl = "http://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
-        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account` , myLink , imageUrl);
+        await sendTelegramMessage(chatId, `Welcome, ${firstName}! Your account has been created go to your web app account` , imageUrl , myLink);
       } else {
         // Inform the user they already exist
         const myLink = `http://telegram-bot-sable-tau.vercel.app/${chatId}?firstName=${firstName}&lastName=${lastName}`;
         const imageUrl = "http://drive.google.com/uc?id=1QmDtOq8LQNUfQxna0H_4CFrL94WjVeEI"
-        await sendTelegramMessage(chatId, `Welcome back ${firstName}!` , myLink , imageUrl);
+        await sendTelegramMessage(chatId, `Welcome back ${firstName}!` , imageUrl , myLink );
       }
     }
   }
@@ -53,27 +53,32 @@ export async function POST(req) {
 }
 
 // Function to send messages back to the Telegram bot
-async function sendTelegramMessage(chatId,text , webAppUrl ,imageUrl) {
+async function sendTelegramMessage(chatId, text, imageUrl, webAppUrl) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
-
+  console.log("sending ... ");
+  
+  
   await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: chatId,
-      text: text,
-      photo : imageUrl,
+      photo: imageUrl, // URL of the image
+      caption: text, // Caption for the image
       reply_markup: {
         inline_keyboard: [
           [
             {
-              text: 'Open your web app',
-              web_app: { url: webAppUrl }, // This is the key part
+              text: 'Open Web App',
+              web_app: { url: webAppUrl }, // Web App Button
             },
           ],
         ],
       },
     }),
   });
+
+
+
 }
