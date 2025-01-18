@@ -29,6 +29,7 @@ export async function POST(req) {
           firstName,
           lastName,
           username,
+          score : 0,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
         
