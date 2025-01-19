@@ -1,21 +1,41 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import img1 from "../../../public/img1.png";
 import img2 from "../../../public/img2.png";
 import icon from "../../../public/icon.svg";
 import m1 from "../../../public/medal1.png";
 import m2 from "../../../public/medal2.png";
 import m3 from "../../../public/medal3.png";
-
-
 import { ChevronRight, CircleCheckBig, CopyIcon } from "lucide-react";
 import Image from "next/image";
+import { GetScore, InitUser, TopUser, UpdateScore } from "../logic";
+import { useParams } from "next/navigation";
+
+
+// async function writeData() {
+//   const ref = database.ref("users/123");
+//   await ref.set({
+//     username: "JohnDoe",
+//     email: "johndoe@example.com",
+//     profile_picture: "http://example.com/johndoe.jpg",
+//   });
+//   console.log("Data written successfully!");
+// }
+
 
 export default function Home() {
   const [btn, setBtn] = useState(1);
   const searchParams = new URLSearchParams(window.location.search);
+  const [valideUser , setvalideUser] = useState(false);
+  
+  const id = useParams().id;
   const firstName = searchParams.get("firstName");
   const lastName = searchParams.get("lastName");
+  useEffect(() => {
+    
+    InitUser(id, firstName , lastName , setvalideUser);
+  
+  } , [])
 
   return (
     <>
@@ -28,7 +48,7 @@ export default function Home() {
           </button>
         </div>
         <div className="w-full   md:h-[40%] hidden md:flex   items-center  flex-col justify-center ">
-          <Score />
+          <Score valide={valideUser} id={id} />
         </div>
 
         <div className="flex flex-col  md:overflow-hidden overflow-y-auto md:flex-row px-2  gap-2 w-full  md:w-[95%]  ">
@@ -52,21 +72,21 @@ export default function Home() {
               <p> My Tasks </p>
             </div>
           </div>
-          {btn === 1 && <Coin />}
-          {btn === 2 && <Tasks />}
+          {btn === 1 && <Coin valide={valideUser} id={id} />}
+          {btn === 2 && <Tasks valide={valideUser} />}
         </div>
       </main>
     </>
   );
 }
 
-function Tasks({ data }) {
+function Tasks({ data , valide }) {
   return (
     <div
       id="style-1"
       className="w-full overflow-hidden md:overflow-auto md:pr-5  py-2  flex flex-col gap-2 "
     >
-      <button className="py-3 w-full rounded-2xl bg-main text-white" > Ivite your friends </button>
+      <button className="py-3 w-full rounded-2xl bg-main text-white" > Invite your friends </button>
       <TaskLigne title="Visit this website" value={4500} />
     </div>
   );
@@ -88,12 +108,15 @@ function TaskLigne({ value, title }) {
   );
 }
 
-function Coin({ data }) {
+function Coin({id , valide , data }) {
+  useEffect(() => {
+    TopUser();
+  })
   return (
     <>
       <div id="style-1" className="w-full overflow-y-auto h-full p-1 ">
         <div className="w-full md:hidden  md:h-[45%] rounded-2xl  md:scale-105  border-[.6px] border-white/60 items-center flex flex-col justify-center ">
-          <Score />
+          <Score valide={valide} id={id} />
         </div>
         <div className="w-full flex flex-col pt-4 md:pt-0 pb-2 md:pb-0 gap-3 ">
           <TopScoredLine index={1} score={2000300} name="Sayah abdel-ilah" />
@@ -108,11 +131,18 @@ function Coin({ data }) {
   );
 }
 
-function Score() {
+function Score({id , valide}) {
+  const [score , setscore] = useState(null)
+  useEffect(() => {
+    if(valide) {
+      GetScore(id , setscore)
+    }
+  } , [valide])
+  
   return (
-    <div className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   ">
+    <div onClick={() => UpdateScore(id , 0.001 , score)} className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   ">
       <Image className="w-28" src={icon} alt="..." />
-      <h1 className="text-3xl text-white font-bold "> 1000000400.000</h1>
+      <h1 className="text-3xl h-12 text-white font-bold "> {valide ? score : "no score"} </h1>
     </div>
   );
 }
