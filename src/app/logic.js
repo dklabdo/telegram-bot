@@ -81,12 +81,10 @@ export function AfiliateLink(link) {
 export async function TopUser() {
   // return the top 10 scored user
   const dbRef = ref(database, `/user`);
-  let userArr;
   try {
     const snapshot = await get(dbRef);
     if (snapshot.exists()) {
       console.log(snapshot.val());
-      userArr = snapshot.val();
     } 
   } catch (err) {
     console.error(err);
