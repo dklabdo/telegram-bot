@@ -78,19 +78,35 @@ export function AfiliateLink(link) {
   // once someone add your link into his account this function will update your score
 }
 
-export async function TopUser() {
+export async function TopUser(callBack) {
   // return the top 10 scored user
   const dbRef = ref(database, `/user`);
   try {
     const snapshot = await get(dbRef);
     if (snapshot.exists()) {
       console.log(snapshot.val());
+      const topUser = transformAndSort(snapshot.val() , "score")
+      console.log(topUser);
+      
+      callBack(topUser)
     } 
   } catch (err) {
     console.error(err);
-    return false;
   }
 }
+
+
+function transformAndSort(obj, sortByKey) {
+  // Step 1: Convert the object of objects into an array of objects
+  const arr = Object.values(obj);
+
+  // Step 2: Sort the array based on the specified key
+  arr.sort((a, b) => b[sortByKey] - a[sortByKey]); // Sort in descending order
+
+  // Step 3: Return the top 10 objects from the sorted array
+  return arr.slice(0, 10);
+}
+
 
 export function Takbis(id) {
   // increment the score on every click

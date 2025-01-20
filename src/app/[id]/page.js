@@ -109,9 +109,12 @@ function TaskLigne({ value, title }) {
 }
 
 function Coin({id , valide , data }) {
+  const [topUser , settopUser] = useState([])
   useEffect(() => {
-    TopUser();
-  })
+    TopUser(settopUser);
+    console.log(topUser);
+    
+  } , [])
   return (
     <>
       <div id="style-1" className="w-full overflow-y-auto h-full p-1 ">
@@ -119,12 +122,14 @@ function Coin({id , valide , data }) {
           <Score valide={valide} id={id} />
         </div>
         <div className="w-full flex flex-col pt-4 md:pt-0 pb-2 md:pb-0 gap-3 ">
-          <TopScoredLine index={1} score={2000300} name="Sayah abdel-ilah" />
-          <TopScoredLine index={2} score={2000300} name="Yasser leshab" />
-          <TopScoredLine index={3} score={2000300} name="Ali abdelnabi" />
-          <TopScoredLine index={3} score={2000300} name="Ali abdelnabi" />
-          <TopScoredLine index={3} score={2000300} name="Ali abdelnabi" />
-          <TopScoredLine index={5} score={2000300} name="Ali abdelnabi" />
+          {
+            topUser.map((val , index) => {
+                
+              return <TopScoredLine key={index} index={index+1} score={val.score} name={`${val.firstName} ${val.lastName}`} />
+            })
+          }
+          
+          
         </div>
       </div>
     </>
