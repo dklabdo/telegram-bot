@@ -8,9 +8,16 @@ import m2 from "../../../public/medal2.png";
 import m3 from "../../../public/medal3.png";
 import { ChevronRight, CircleCheckBig, CopyIcon } from "lucide-react";
 import Image from "next/image";
-import { GetScore, InitUser, TopUser, UpdateScore } from "../logic";
+import {
+  GetScore,
+  GetTask,
+  GetUserTask,
+  InitUser,
+  TopUser,
+  UpdateScore,
+} from "../logic";
 import { useParams } from "next/navigation";
-
+import toast, { Toaster } from "react-hot-toast";
 
 // async function writeData() {
 //   const ref = database.ref("users/123");
@@ -22,27 +29,31 @@ import { useParams } from "next/navigation";
 //   console.log("Data written successfully!");
 // }
 
-
 export default function Home() {
   const [btn, setBtn] = useState(1);
   const searchParams = new URLSearchParams(window.location.search);
-  const [valideUser , setvalideUser] = useState(false);
-  
+  const [valideUser, setvalideUser] = useState(false);
+
   const id = useParams().id;
   const firstName = searchParams.get("firstName");
   const lastName = searchParams.get("lastName");
   useEffect(() => {
-    
-    InitUser(id, firstName , lastName , setvalideUser);
-  
-  } , [])
-
+    InitUser(id, firstName, lastName, setvalideUser);
+  }, []);
+  function CopyId(){
+    navigator.clipboard.writeText("https://t.me/qrorderdzbot").then(() => {
+      toast.success("text copied")
+    })
+  }
   return (
     <>
       <main className="w-full  text-white  overflow-hidden flex justify-start flex-col h-screen">
         <div className="flex px-3 w-[95%]  justify-between  py-6  ">
-          <p className="text-lg "> {firstName} {lastName} </p>
-          <button className="flex ">
+          <p className="text-lg ">
+            {" "}
+            {firstName} {lastName}{" "}
+          </p>
+          <button onClick={() => CopyId()} className="flex ">
             {" "}
             <CopyIcon size={22} />{" "}
           </button>
@@ -73,28 +84,63 @@ export default function Home() {
             </div>
           </div>
           {btn === 1 && <Coin valide={valideUser} id={id} />}
-          {btn === 2 && <Tasks valide={valideUser} />}
+          {btn === 2 && <Tasks id={id} valide={valideUser} />}
         </div>
       </main>
     </>
   );
 }
 
-function Tasks({ data , valide }) {
+function Tasks({ id, valide }) {
+  const [userTask, setuserTask] = useState([]);
+  const [tasks, settasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    GetUserTask(id, setuserTask);
+  }, []);
+  useEffect(() => {
+    if (tasks) {
+      GetTask(settasks, userTask);
+      console.log(tasks);
+      
+      setIsLoading(false);
+    }
+  }, [userTask]);
   return (
     <div
       id="style-1"
-      className="w-full overflow-hidden md:overflow-auto md:pr-5  py-2  flex flex-col gap-2 "
+      className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <button className="py-3 w-full rounded-2xl bg-main text-white" > Invite your friends </button>
-      <TaskLigne title="Visit this website" value={4500} />
+      <button className="py-3 w-full rounded-lg bg-main text-white">
+        {" "}
+        Invite your friends{" "}
+      </button>
+      
+      {isLoading ? (
+        <p> Loading ... </p>
+      ) : (
+        tasks.map((val, index) => {
+          return (
+            <TaskLigne
+              key={index}
+              title={val.title}
+              link={val.link}
+              value={val.price}
+            />
+          );
+        })
+      )}
     </div>
   );
 }
 
-function TaskLigne({ value, title }) {
+function TaskLigne({ value, title, link }) {
   return (
-    <div className="bg-black/20 flex justify-between px-6 py-5 w-full items-center rounded-2xl ">
+    <a
+      href={link}
+      target="_blank"
+      className="bg-black/20 flex justify-between px-6 py-5 w-full items-center rounded-2xl "
+    >
       <CircleCheckBig className="hidden md:block" />
       <div className="flex  flex-col w-full">
         <p className="text-start md:px-3 w-full "> {title} </p>
@@ -104,17 +150,16 @@ function TaskLigne({ value, title }) {
         {value}C
       </button>
       <ChevronRight className="md:hidden" size={20} />
-    </div>
+    </a>
   );
 }
 
-function Coin({id , valide , data }) {
-  const [topUser , settopUser] = useState([])
+function Coin({ id, valide, data }) {
+  const [topUser, settopUser] = useState([]);
   useEffect(() => {
     TopUser(settopUser);
     console.log(topUser);
-    
-  } , [])
+  }, []);
   return (
     <>
       <div id="style-1" className="w-full overflow-y-auto h-full p-1 ">
@@ -122,53 +167,59 @@ function Coin({id , valide , data }) {
           <Score valide={valide} id={id} />
         </div>
         <div className="w-full flex flex-col pt-4 md:pt-0 pb-2 md:pb-0 gap-3 ">
-          {
-            topUser.map((val , index) => {
-                
-              return <TopScoredLine key={index} index={index+1} score={val.score} name={`${val.firstName} ${val.lastName}`} />
-            })
-          }
-          
-          
+          {topUser.map((val, index) => {
+            return (
+              <TopScoredLine
+                key={index}
+                index={index + 1}
+                score={val.score}
+                name={`${val.firstName} ${val.lastName}`}
+              />
+            );
+          })}
         </div>
       </div>
     </>
   );
 }
 
-function Score({id , valide}) {
-  const [score , setscore] = useState(null)
+function Score({ id, valide }) {
+  const [score, setscore] = useState(null);
   useEffect(() => {
-    if(valide) {
-      GetScore(id , setscore)
+    if (valide) {
+      GetScore(id, setscore);
     }
-  } , [valide])
-  
+  }, [valide]);
+
   return (
-    <div onClick={() => UpdateScore(id , 0.001 , score)} className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   ">
+    <div
+      onClick={() => UpdateScore(id, 0.001, score)}
+      className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   "
+    >
       <Image className="w-28" src={icon} alt="..." />
-      <h1 className="text-3xl h-12 text-white font-bold "> {valide ? score : "no score"} </h1>
+      <h1 className="text-3xl h-12 text-white font-bold ">
+        {" "}
+        {valide ? score : "no score"}{" "}
+      </h1>
     </div>
   );
 }
 
-function TopScoredLine({name , score , index}) {
+function TopScoredLine({ name, score, index }) {
   return (
-    <div className="w-full p-3 rounded-2xl   a bg-black/20 flex flex-col  " >
-        <div className="flex flex-row-reverse px-1 justify-between gap-3 items-center" >
-            {index === 1 && <Image alt="..." className="w-6 pr-1" src={m1} />}
-            {index === 2 && <Image alt="..." className="w-6 pr-1" src={m2} />}
-            {index === 3 && <Image alt="..." className="w-6 pr-1" src={m3} />}
-            {index === 1 && <p> Top 1 </p>}
-            {index === 2 && <p> Top 2 </p>}
-            {index === 3 && <p> Top 3 </p>}
-        </div>
-        <div className="flex justify-between items-center  pt-3 px-1 " >
-
-          <p> {name} </p>
-          <p className="bg-main text-white px-2 py-1 rounded-2xl" > {score} </p>
-
-        </div>
+    <div className="w-full p-3 rounded-2xl   a bg-black/20 flex flex-col  ">
+      <div className="flex flex-row-reverse px-1 justify-between gap-3 items-center">
+        {index === 1 && <Image alt="..." className="w-6 pr-1" src={m1} />}
+        {index === 2 && <Image alt="..." className="w-6 pr-1" src={m2} />}
+        {index === 3 && <Image alt="..." className="w-6 pr-1" src={m3} />}
+        {index === 1 && <p> Top 1 </p>}
+        {index === 2 && <p> Top 2 </p>}
+        {index === 3 && <p> Top 3 </p>}
+      </div>
+      <div className="flex justify-between items-center  pt-3 px-1 ">
+        <p> {name} </p>
+        <p className="bg-main text-white px-2 py-1 rounded-2xl"> {score} </p>
+      </div>
     </div>
   );
 }
