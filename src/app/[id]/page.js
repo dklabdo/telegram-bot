@@ -111,6 +111,23 @@ function Tasks({ user }) {
   const telegramUrl = `tg://msg_url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
 
 
+  const handleClick = () => {
+    // Open the Telegram app
+    window.location.href = telegramUrl;
+
+    // Fallback for desktop users
+    setTimeout(() => {
+      if (document.hidden) {
+        // Telegram app was opened successfully
+        return;
+      } else {
+        // Telegram app was not opened, redirect to Telegram web
+        window.open(`https://web.telegram.org/#/im?text=${encodeURIComponent(message)} ${encodeURIComponent(link)}`, '_blank');
+      }
+    }, 1000); // Wait 1 second to check if the app was opened
+  };
+
+
   useEffect(() => {
     if (user != null) {
       GetTask(settasks, user.task);
@@ -124,10 +141,10 @@ function Tasks({ user }) {
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <a href={telegramUrl} target="_blank" rel="noopener noreferrer" className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
+      <button onClick={() => handleClick()} className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
         {" "}
         Invite your friends{" "}
-      </a>
+      </button>
 
       {isLoading ? (
         <p> Loading ... </p>
