@@ -124,7 +124,7 @@ function Tasks({ user }) {
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <a href={telegramUrl} target="_blank" rel="noopener noreferrer" className="py-3 w-full rounded-xl bg-main text-white">
+      <a href={telegramUrl} target="_blank" rel="noopener noreferrer" className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
         {" "}
         Invite your friends{" "}
       </a>
