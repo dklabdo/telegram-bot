@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import img1 from "../../../public/img1.png";
 import img2 from "../../../public/img2.png";
 import icon from "../../../public/icon.svg";
@@ -8,6 +8,7 @@ import m2 from "../../../public/medal2.png";
 import m3 from "../../../public/medal3.png";
 import { ChevronRight, CircleCheckBig, CopyIcon } from "lucide-react";
 import Image from "next/image";
+import confetti from "canvas-confetti";
 import {
   DoTask,
   GetScore,
@@ -100,7 +101,7 @@ export default function Home() {
   );
 }
 
-function Tasks({ id, valide, user }) {
+function Tasks({  user }) {
   const [tasks, settasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -174,7 +175,6 @@ function Coin({ id, valide, user }) {
   const [topUser, settopUser] = useState([]);
   useEffect(() => {
     TopUser(settopUser);
-    console.log(topUser);
   }, []);
   return (
     <>
@@ -200,13 +200,38 @@ function Coin({ id, valide, user }) {
 }
 
 function Score({ id, valide, user }) {
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 100, // Number of confetti particles
+      spread: 70, // Spread of the confetti
+      origin: { y: 0.6 }, // Origin of the confetti (bottom of the screen)
+    });
+  };
+
+  useEffect(() => {
+    
+    const timeSet = setTimeout(() => {
+      triggerConfetti()
+    } , 300)
+
+    return () => {
+      clearTimeout(timeSet)
+    }
+
+  } , [user])
+
+
+  
+
+  
   return (
     <div
-      onClick={() => UpdateScore(id, 0.001, user.score)}
-      className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   "
+      onClick={() => UpdateScore(id, 0.0001, user.score)}
+      className="flex   flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   "
     >
-      <Image className="w-28" src={icon} alt="..." />
-      <h1 className="text-3xl h-12 text-white font-bold ">
+      <Image className="w-28 animate-bounce " src={icon} alt="..." />
+      <h1  className="text-3xl h-12 text-white font-bold ">
         {" "}
         {valide && user != null ? user.score : "no score"}{" "}
       </h1>

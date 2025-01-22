@@ -1,6 +1,12 @@
 import { database } from "../../lib/firebaseClient";
 import { ref, set, onValue, push, update, get, child } from "firebase/database";
-import { addDoc, collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { fireStoreDb } from "../../lib/firebaseClient";
 
 export async function InitUser(id, first, last, callBack) {
@@ -17,10 +23,10 @@ export async function InitUser(id, first, last, callBack) {
       const data = {
         firstName: first,
         lastName: last,
-        task : ["Qd2LvUs7MK9yEoXI16zh"],
+        task: ["Qd2LvUs7MK9yEoXI16zh"],
         id: id,
         score: 0,
-        
+        banned : false
       };
       set(dbRef, data)
         .then(() => {
@@ -62,12 +68,14 @@ export function GetScore(id, callback) {
 
     if (data != null) {
       console.log(data);
+      if(data.banned == false ) {
+        callback(data);
+      }
+
       
-      callback(data);
     }
   });
 }
-
 
 export function GetUserTask(id, callback) {
   // get the use score
@@ -78,7 +86,6 @@ export function GetUserTask(id, callback) {
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
     console.log(data.task);
-    
 
     if (data != null) {
       callback(data.task);
@@ -86,55 +93,47 @@ export function GetUserTask(id, callback) {
   });
 }
 
-export async function GetTask(callBack , arr  ) {
+export async function GetTask(callBack, arr) {
   // this function get all the tasks and filter them the task that the user already finish them will not be displayed
   const q = collection(fireStoreDb, "tasks"); // Replace with your collection name
   onSnapshot(q, (querySnapshot) => {
     let res = [];
-    
+
     querySnapshot.forEach((doc) => {
-      
-      
       if (!arr.includes(doc.id)) {
         // If the id is not found, add the object to the current array
-        res.push({...doc.data() , id : doc.id})
-    }
-      
+        res.push({ ...doc.data(), id: doc.id });
+      }
+
       callBack(res);
     });
   });
-
 }
 
-
-
-
-
-export function DoTask(user , value  , taskId) {
+export function DoTask(user, value, taskId) {
   // the function that work when a user want to do a task and it will update the score after the task has been completed
-  if(user){
+  if (user) {
     setTimeout(() => {
       const dbRef = ref(database, `user/${user.id}`); // Path to the data you want to update
-      const newArr = [...user.task , taskId]
+      const newArr = [...user.task, taskId];
       console.log(newArr);
-      
-      update(dbRef, {task : newArr})
-          .then(() => {
-              console.log("Data updated successfully!");
-              UpdateScore(user.id , value , user.score)
-          })
-          .catch((error) => {
-              console.error("Error updating data:", error);
-          });
-      
-    }, 1000)
+
+      update(dbRef, { task: newArr })
+        .then(() => {
+          console.log("Data updated successfully!");
+          UpdateScore(user.id, value, user.score);
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+        });
+    }, 1000);
   }
 }
 
 export function UpdateScore(id, val, score) {
   // this function update the score with the value
   const dbRef = ref(database, `/user/${id}`);
-  update(dbRef, { score: parseFloat((score + Number(val)).toFixed(3)) })
+  update(dbRef, { score: parseFloat((score + Number(val)).toFixed(4)) })
     .then(() => {
       console.log("Data updated successfully!");
     })
@@ -148,20 +147,18 @@ export function AfiliateLink(link) {
 }
 
 export async function TopUser(callBack) {
+  //
   // return the top 10 scored user
   const dbRef = ref(database, `/user`);
-  try {
-    const snapshot = await get(dbRef);
-    if (snapshot.exists()) {
-      console.log(snapshot.val());
-      const topUser = transformAndSort(snapshot.val(), "score");
-      console.log(topUser);
+  onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+
+    if (data != null) {
+      const topUser = transformAndSort(data, "score");
 
       callBack(topUser);
     }
-  } catch (err) {
-    console.error(err);
-  }
+  });
 }
 
 function transformAndSort(obj, sortByKey) {
@@ -175,7 +172,7 @@ function transformAndSort(obj, sortByKey) {
   return arr.slice(0, 10);
 }
 
-export async function AddTask(title , link ,price , e ) {
+export async function AddTask(title, link, price, e) {
   try {
     const docRef = await addDoc(collection(fireStoreDb, "tasks"), {
       title: title,
@@ -186,7 +183,6 @@ export async function AddTask(title , link ,price , e ) {
     e.target[1].value = "";
     e.target[2].value = "";
     console.log("Document written with ID: ", docRef.id);
-    
   } catch (err) {
     console.error("Error adding document: ", err);
   }
