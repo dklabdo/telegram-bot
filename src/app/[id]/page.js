@@ -107,22 +107,20 @@ function Tasks({ user }) {
   const link = `https://t.me/qrorderdzbot?start=${user.id}`
   const message = "Join order telegram bot!"; // Optional message
 
-  // Create the Telegram deep link
   const telegramUrl = `tg://msg_url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
 
+  // Fallback URL (Telegram web app)
+  const fallbackUrl = `https://web.telegram.org/#/im?text=${encodeURIComponent(message)}${encodeURIComponent(link)}`;
 
+  // Function to handle the click event
   const handleClick = () => {
-    // Open the Telegram app
+    // Try to open the Telegram app
     window.location.href = telegramUrl;
 
-    // Fallback for desktop users
+    // Fallback: If the app doesn't open, redirect to the Telegram web app
     setTimeout(() => {
-      if (document.hidden) {
-        // Telegram app was opened successfully
-        return;
-      } else {
-        // Telegram app was not opened, redirect to Telegram web
-        window.open(`https://web.telegram.org/#/im?text=${encodeURIComponent(message)} ${encodeURIComponent(link)}`, '_blank');
+      if (!document.hidden) {
+        window.location.href = fallbackUrl;
       }
     }, 1000); // Wait 1 second to check if the app was opened
   };
