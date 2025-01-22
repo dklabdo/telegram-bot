@@ -34,7 +34,7 @@ export async function POST(req) {
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
         if (referralCode) {
-          await rewardReferrer(referralCode, chatId);
+          await rewardReferrer(referralCode);
         }
 
         // Send a welcome message
