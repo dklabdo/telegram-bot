@@ -154,7 +154,7 @@ function TaskLigne({ value, title, link , user , id }) {
   return (
     <a
       href={link}
-      target="_self"
+      target="_blank"
       onClick={() => DoTask(user , value , id)}
       className="bg-black/20 flex justify-between px-6 py-5 w-full items-center rounded-2xl "
     >
@@ -209,25 +209,20 @@ function Score({ id, valide, user }) {
     });
   };
 
-  useEffect(() => {
-    
+  function handleClick(){
+    UpdateScore(id, 0.0001, user.score)
     const timeSet = setTimeout(() => {
       triggerConfetti()
-    } , 300)
+    } , 400)
 
-    return () => {
-      clearTimeout(timeSet)
-    }
-
-  } , [user])
-
+  }
 
   
 
   
   return (
     <div
-      onClick={() => UpdateScore(id, 0.0001, user.score)}
+      onClick={() => handleClick()}
       className="flex   flex-col md:py-4 pb-6 pt-12 rounded-3xl  items-center gap-10 w-[90%]   "
     >
       <Image className="w-28 animate-bounce " src={icon} alt="..." />
