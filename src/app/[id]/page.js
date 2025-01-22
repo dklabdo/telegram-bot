@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import img1 from "../../../public/img1.png";
 import img2 from "../../../public/img2.png";
 import icon from "../../../public/icon.svg";
@@ -9,6 +9,7 @@ import m3 from "../../../public/medal3.png";
 import { ChevronRight, CircleCheckBig, CopyIcon } from "lucide-react";
 import Image from "next/image";
 import {
+  DoTask,
   GetScore,
   GetTask,
   GetUserTask,
@@ -33,6 +34,7 @@ export default function Home() {
   const [btn, setBtn] = useState(1);
   const searchParams = new URLSearchParams(window.location.search);
   const [valideUser, setvalideUser] = useState(false);
+  const [user, setuser] = useState(null);
 
   const id = useParams().id;
   const firstName = searchParams.get("firstName");
@@ -40,11 +42,17 @@ export default function Home() {
   useEffect(() => {
     InitUser(id, firstName, lastName, setvalideUser);
   }, []);
-  function CopyId(){
+  function CopyId() {
     navigator.clipboard.writeText("https://t.me/qrorderdzbot").then(() => {
-      toast.success("text copied")
-    })
+      toast.success("text copied");
+    });
   }
+  useEffect(() => {
+    if (valideUser === true) {
+      GetScore(id, setuser);
+      console.log(user);
+    }
+  }, [valideUser]);
   return (
     <>
       <main className="w-full  text-white  overflow-hidden flex justify-start flex-col h-screen">
@@ -59,7 +67,7 @@ export default function Home() {
           </button>
         </div>
         <div className="w-full   md:h-[40%] hidden md:flex   items-center  flex-col justify-center ">
-          <Score valide={valideUser} id={id} />
+          <Score valide={valideUser} user={user} id={id} />
         </div>
 
         <div className="flex flex-col  md:overflow-hidden overflow-y-auto md:flex-row px-2  gap-2 w-full  md:w-[95%]  ">
@@ -83,62 +91,69 @@ export default function Home() {
               <p> My Tasks </p>
             </div>
           </div>
-          {btn === 1 && <Coin valide={valideUser} id={id} />}
-          {btn === 2 && <Tasks id={id} valide={valideUser} />}
+          {btn === 1 && <Coin user={user} valide={valideUser} id={id} />}
+          {btn === 2 && <Tasks user={user} id={id} valide={valideUser} />}
         </div>
       </main>
     </>
   );
 }
 
-function Tasks({ id, valide }) {
-  const [userTask, setuserTask] = useState([]);
+function Tasks({ id, valide, user }) {
   const [tasks, settasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    GetUserTask(id, setuserTask);
-  }, []);
-  useEffect(() => {
-    if (tasks) {
-      GetTask(settasks, userTask);
+    if (user != null) {
+      GetTask(settasks, user.task);
       console.log(tasks);
-      
+
       setIsLoading(false);
     }
-  }, [userTask]);
+  }, [user]);
   return (
     <div
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <button className="py-3 w-full rounded-lg bg-main text-white">
+      <button className="py-3 w-full rounded-xl bg-main text-white">
         {" "}
         Invite your friends{" "}
       </button>
-      
+
       {isLoading ? (
         <p> Loading ... </p>
       ) : (
-        tasks.map((val, index) => {
-          return (
-            <TaskLigne
-              key={index}
-              title={val.title}
-              link={val.link}
-              value={val.price}
-            />
-          );
-        })
+        <div className="w-full flex flex-col-reverse gap-3">
+          {tasks.map((val, index) => {
+            return (
+              <TaskLigne
+                key={index}
+                title={val.title}
+                link={val.link}
+                value={val.price}
+                id={val.id}
+                user={user}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
 }
 
-function TaskLigne({ value, title, link }) {
+function TaskLigne({ value, title, link , user , id }) {
+  console.log(id);
+  
+  function handleClick(){
+
+  }
   return (
     <a
       href={link}
       target="_blank"
+      onClick={() => DoTask(user , value , id)}
       className="bg-black/20 flex justify-between px-6 py-5 w-full items-center rounded-2xl "
     >
       <CircleCheckBig className="hidden md:block" />
@@ -154,7 +169,7 @@ function TaskLigne({ value, title, link }) {
   );
 }
 
-function Coin({ id, valide, data }) {
+function Coin({ id, valide, user }) {
   const [topUser, settopUser] = useState([]);
   useEffect(() => {
     TopUser(settopUser);
@@ -164,7 +179,7 @@ function Coin({ id, valide, data }) {
     <>
       <div id="style-1" className="w-full overflow-y-auto h-full p-1 ">
         <div className="w-full md:hidden  md:h-[45%] rounded-2xl  md:scale-105  border-[.6px] border-white/60 items-center flex flex-col justify-center ">
-          <Score valide={valide} id={id} />
+          <Score user={user} valide={valide} id={id} />
         </div>
         <div className="w-full flex flex-col pt-4 md:pt-0 pb-2 md:pb-0 gap-3 ">
           {topUser.map((val, index) => {
@@ -183,14 +198,7 @@ function Coin({ id, valide, data }) {
   );
 }
 
-function Score({ id, valide }) {
-  const [score, setscore] = useState(null);
-  useEffect(() => {
-    if (valide) {
-      GetScore(id, setscore);
-    }
-  }, [valide]);
-
+function Score({ id, valide, user }) {
   return (
     <div
       onClick={() => UpdateScore(id, 0.001, score)}
@@ -199,7 +207,7 @@ function Score({ id, valide }) {
       <Image className="w-28" src={icon} alt="..." />
       <h1 className="text-3xl h-12 text-white font-bold ">
         {" "}
-        {valide ? score : "no score"}{" "}
+        {valide && user != null ? user.score : "no score"}{" "}
       </h1>
     </div>
   );

@@ -61,7 +61,9 @@ export function GetScore(id, callback) {
     const data = snapshot.val();
 
     if (data != null) {
-      callback(data.score);
+      console.log(data);
+      
+      callback(data);
     }
   });
 }
@@ -95,7 +97,7 @@ export async function GetTask(callBack , arr  ) {
       
       if (!arr.includes(doc.id)) {
         // If the id is not found, add the object to the current array
-        res.push(doc.data())
+        res.push({...doc.data() , id : doc.id})
     }
       
       callBack(res);
@@ -108,8 +110,25 @@ export async function GetTask(callBack , arr  ) {
 
 
 
-export function DoTask(id, value) {
+export function DoTask(user , value  , taskId) {
   // the function that work when a user want to do a task and it will update the score after the task has been completed
+  if(user){
+    setTimeout(() => {
+      const dbRef = ref(database, `user/${user.id}`); // Path to the data you want to update
+      const newArr = [...user.task , taskId]
+      console.log(newArr);
+      
+      update(dbRef, {task : newArr})
+          .then(() => {
+              console.log("Data updated successfully!");
+              UpdateScore(user.id , value , user.score)
+          })
+          .catch((error) => {
+              console.error("Error updating data:", error);
+          });
+      
+    }, 1000)
+  }
 }
 
 export function UpdateScore(id, val, score) {

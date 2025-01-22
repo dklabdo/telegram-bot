@@ -22,6 +22,7 @@ function page() {
 
     return () => unsubscribe();
   }, [router]);
+  
 
   const handleSignOut = async () => {
     try {
