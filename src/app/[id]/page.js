@@ -201,7 +201,7 @@ function Coin({ id, valide, user }) {
 function Score({ id, valide, user }) {
   return (
     <div
-      onClick={() => UpdateScore(id, 0.001, score)}
+      onClick={() => UpdateScore(id, 0.001, user.score)}
       className="flex  flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   "
     >
       <Image className="w-28" src={icon} alt="..." />
