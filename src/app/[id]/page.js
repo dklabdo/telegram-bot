@@ -154,7 +154,7 @@ function TaskLigne({ value, title, link , user , id }) {
   return (
     <a
       href={link}
-      target="_blank"
+      target="_self"
       onClick={() => DoTask(user , value , id)}
       className="bg-black/20 flex justify-between px-6 py-5 w-full items-center rounded-2xl "
     >
