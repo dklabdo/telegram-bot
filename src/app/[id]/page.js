@@ -107,20 +107,22 @@ function Tasks({ user }) {
   const link = `https://t.me/qrorderdzbot?start=${user.id}`
   const message = "Join order telegram bot!"; // Optional message
 
+  // Create the Telegram deep link
   const telegramUrl = `tg://msg_url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
 
-  // Fallback URL (Telegram web app)
-  const fallbackUrl = `https://web.telegram.org/#/im?text=${encodeURIComponent(message)}${encodeURIComponent(link)}`;
 
-  // Function to handle the click event
   const handleClick = () => {
-    // Try to open the Telegram app
+    // Open the Telegram app
     window.location.href = telegramUrl;
 
-    // Fallback: If the app doesn't open, redirect to the Telegram web app
+    // Fallback for desktop users
     setTimeout(() => {
-      if (!document.hidden) {
-        window.location.href = fallbackUrl;
+      if (document.hidden) {
+        // Telegram app was opened successfully
+        return;
+      } else {
+        // Telegram app was not opened, redirect to Telegram web
+        window.open(`https://web.telegram.org/#/im?text=${encodeURIComponent(message)} ${encodeURIComponent(link)}`, '_blank');
       }
     }, 1000); // Wait 1 second to check if the app was opened
   };
@@ -139,10 +141,10 @@ function Tasks({ user }) {
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <button onClick={() => handleClick()} className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
+      <a href={telegramUrl} target="_blank"  className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
         {" "}
         Invite your friends{" "}
-      </button>
+      </a>
 
       {isLoading ? (
         <p> Loading ... </p>
