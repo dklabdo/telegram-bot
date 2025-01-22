@@ -228,7 +228,7 @@ function Score({ id, valide, user }) {
   return (
     <div
       onClick={() => UpdateScore(id, 0.0001, user.score)}
-      className="flex   flex-col md:py-4 py-10 rounded-3xl  items-center gap-10 w-[90%]   "
+      className="flex   flex-col md:py-4 pb-6 pt-12 rounded-3xl  items-center gap-10 w-[90%]   "
     >
       <Image className="w-28 animate-bounce " src={icon} alt="..." />
       <h1  className="text-3xl h-12 text-white font-bold ">
