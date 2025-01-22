@@ -101,9 +101,15 @@ export default function Home() {
   );
 }
 
-function Tasks({  user }) {
+function Tasks({ user }) {
   const [tasks, settasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const link = `https://t.me/qrorderdzbot?start=${user.id}`
+  const message = "Join order telegram bot!"; // Optional message
+
+  // Create the Telegram deep link
+  const telegramUrl = `tg://msg_url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
+
 
   useEffect(() => {
     if (user != null) {
@@ -118,10 +124,10 @@ function Tasks({  user }) {
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <button className="py-3 w-full rounded-xl bg-main text-white">
+      <a href={telegramUrl} target="_blank" rel="noopener noreferrer" className="py-3 w-full rounded-xl bg-main text-white">
         {" "}
         Invite your friends{" "}
-      </button>
+      </a>
 
       {isLoading ? (
         <p> Loading ... </p>
