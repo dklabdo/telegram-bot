@@ -43,7 +43,7 @@ export default function Home() {
     InitUser(id, firstName, lastName, setvalideUser);
   }, []);
   function CopyId() {
-    navigator.clipboard.writeText("https://t.me/qrorderdzbot").then(() => {
+    navigator.clipboard.writeText(`https://t.me/qrorderdzbot?start=${user.id}`).then(() => {
       toast.success("text copied");
     });
   }
@@ -55,6 +55,7 @@ export default function Home() {
   }, [valideUser]);
   return (
     <>
+    <Toaster/>
       <main className="w-full  text-white  overflow-hidden flex justify-start flex-col h-screen">
         <div className="flex px-3 w-[95%]  justify-between  py-6  ">
           <p className="text-lg ">
