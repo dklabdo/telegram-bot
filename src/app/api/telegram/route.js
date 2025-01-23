@@ -116,7 +116,7 @@ async function rewardReferrer(referrerId) {
       const referrerData = snapshot.val();
 
       // Update the referring user's score (e.g., +10 points)
-      const newScore = referrerData.score  + 150;
+      const newScore = referrerData.score  + 50;
 
       // Update the score in the database
       await referrerRef.update({ score: newScore });
