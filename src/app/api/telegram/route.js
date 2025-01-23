@@ -43,7 +43,13 @@ export async function POST(req) {
           "https://drive.google.com/uc?id=17Kmx-T14gwhqOE0Evr-QeHuzbVSL53P1";
         await sendTelegramMessage(
           chatId,
-          `Welcome, ${firstName}! Your account has been created go to your web app account`,
+          `Welcome, ${firstName}! Votre aventure gourmande commence ici :
+🗺️ Explorez nos partenaires (https://qrorderdz.com/partners.php) → Débloquez des offres secrètes
+🤝 Parrainez vos proches → Décrochez des duos gourmands
+❤️ Fidélisez-vous → Recevez des invitations VIP
+💰 Vos actions = point = Réductions → Plus vous agissez, plus vous économisez !
+
+Les bonnes choses (et les bonnes affaires) arrivent à ceux qui savourent l'expérience`,
           imageUrl,
           myLink
         );

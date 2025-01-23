@@ -234,9 +234,7 @@ function Score({ id, valide, user }) {
 
   function handleClick(){
     UpdateScore(id, 0.0001, user.score)
-    const timeSet = setTimeout(() => {
-      triggerConfetti()
-    } , 400)
+   
 
   }
 

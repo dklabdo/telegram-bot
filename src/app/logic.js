@@ -133,6 +133,7 @@ export function DoTask(user, value, taskId) {
 export function UpdateScore(id, val, score) {
   // this function update the score with the value
   const dbRef = ref(database, `/user/${id}`);
+  
   update(dbRef, { score: parseFloat((score + Number(val)).toFixed(4)) })
     .then(() => {
       console.log("Data updated successfully!");
