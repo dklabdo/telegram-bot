@@ -233,7 +233,9 @@ function Score({ id, valide, user }) {
   };
 
   function handleClick(){
-    UpdateScore(id, 0.0001, user.score)
+    setTimeout(() => {
+      UpdateScore(id, 0.0001, user.score)
+    } , 250)
    
 
   }
