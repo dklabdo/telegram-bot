@@ -8,6 +8,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { fireStoreDb } from "../../lib/firebaseClient";
+import toast from "react-hot-toast";
 
 export async function InitUser(id, first, last, callBack) {
   //this is the first function that run when thre user open th web app it take the telegram id and the user first and last name then if the telegram id of the user already exist the function will get the current user score and display it in to the screen otherwise the function will create a new collection with the user telegram id and the score set to
@@ -17,6 +18,12 @@ export async function InitUser(id, first, last, callBack) {
     const snapshot = await get(dbRef);
     if (snapshot.exists()) {
       console.log("Fetched data:", snapshot.val());
+      if(snapshot.val().banned === true){
+        toast.error("you are banned")
+        setTimeout(() => {
+          window.close();
+        } , 1000)
+      }
       callBack(true);
       return true;
     } else {
