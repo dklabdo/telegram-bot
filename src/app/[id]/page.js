@@ -147,9 +147,9 @@ function Tasks({ user }) {
       id="style-1"
       className="w-full overflow-auto md:pr-5  py-3  flex flex-col gap-2 "
     >
-      <a href={telegramUrl} target="_blank"  className="py-3 flex justify-center w-full rounded-xl bg-main text-white">
+      <a href={telegramUrl} target="_blank"  className="py-3 text-center flex justify-center w-full rounded-xl bg-main text-white">
         {" "}
-        Invite your friends{" "}
+        Invite your friends to get 50 point {" "}
       </a>
 
       {isLoading ? (
@@ -259,6 +259,7 @@ function Score({ id, valide, user }) {
         {" "}
         {valide && user != null ? user.score : "no score"}{" "}
       </h1>
+      <p className="w-full flex text-white text-lg justify-center" > Click to get points </p>
     </div>
   );
 }
@@ -269,10 +270,8 @@ function TopScoredLine({ name, score, index }) {
       <div className="flex flex-row-reverse px-1 justify-between gap-3 items-center">
         {index === 1 && <Image alt="..." className="w-6 pr-1" src={m1} />}
         {index === 2 && <Image alt="..." className="w-6 pr-1" src={m2} />}
-        {index === 3 && <Image alt="..." className="w-6 pr-1" src={m3} />}
-        {index === 1 && <p> Top 1 </p>}
-        {index === 2 && <p> Top 2 </p>}
-        {index === 3 && <p> Top 3 </p>}
+        {index >= 3 && <Image alt="..." className="w-6 pr-1" src={m3} />}
+        <p> Top ${index} </p>
       </div>
       <div className="flex justify-between items-center  pt-3 px-1 ">
         <p> {name} </p>
