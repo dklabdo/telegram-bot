@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../lib/firebaseClient";
-import { AddTask, GetAllUsers, GetTask } from "../logic";
+import { AddTask, BannUser, GetAllUsers, GetTask } from "../logic";
 import { signOut } from "firebase/auth";
 import Swal from "sweetalert2";
 function page() {
@@ -112,7 +112,7 @@ function User() {
                 {val.score}
               </span>{" "}
             </p>
-            <button className="py-[10px] px-2 bg-main text-white " onClick={() => handleBann(val)} >Bann</button>
+            <button className="py-[10px] rounded-lg px-2 bg-main text-white " onClick={() => handleBann(val)} >Bann</button>
           </div>
         );
       })}
