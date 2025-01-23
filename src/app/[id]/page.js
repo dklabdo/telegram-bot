@@ -271,7 +271,7 @@ function TopScoredLine({ name, score, index }) {
         {index === 1 && <Image alt="..." className="w-6 pr-1" src={m1} />}
         {index === 2 && <Image alt="..." className="w-6 pr-1" src={m2} />}
         {index >= 3 && <Image alt="..." className="w-6 pr-1" src={m3} />}
-        <p> Top ${index} </p>
+        <p> Top {index} </p>
       </div>
       <div className="flex justify-between items-center  pt-3 px-1 ">
         <p> {name} </p>
