@@ -54,6 +54,12 @@ export default function Home() {
       console.log(user);
     }
   }, [valideUser]);
+  function handleClick(val){
+    if(user != null){
+      setBtn(val)
+
+    }
+  }
   return (
     <>
     <Toaster/>
@@ -75,7 +81,7 @@ export default function Home() {
         <div className="flex flex-col  md:overflow-hidden overflow-y-auto md:flex-row px-2  gap-2 w-full  md:w-[95%]  ">
           <div className="flex flex-row  md:flex-col  p-1 gap-2 md:w-52 md:h-full  ">
             <div
-              onClick={() => setBtn(1)}
+              onClick={() => handleClick(1)}
               className={` ${
                 btn === 1 && "bg-sec"
               }  py-3 bg-black/20 hover:bg-sec cursor-pointer md:h-32 p-2 rounded-xl flex  flex-col justify-center items-center w-full`}
@@ -84,7 +90,7 @@ export default function Home() {
               <p> My score </p>
             </div>
             <div
-              onClick={() => setBtn(2)}
+              onClick={() => handleClick(2)}
               className={` ${
                 btn === 2 && "bg-sec"
               }  py-3 bg-black/20 hover:bg-sec cursor-pointer md:h-32 p-2 rounded-xl flex flex-col justify-center items-center w-full`}
@@ -184,7 +190,7 @@ function TaskLigne({ value, title, link , user , id }) {
       <CircleCheckBig className="hidden md:block" />
       <div className="flex  flex-col w-full">
         <p className="text-start md:px-3 w-full "> {title} </p>
-        <p className="md:hidden"> {value}C </p>
+        <p className="md:hidden"> {value} Point </p>
       </div>
       <button className="py-2 hidden md:block px-4  scale-90 bg-main rounded-3xl text-white ">
         {value}C

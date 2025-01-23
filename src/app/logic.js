@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { fireStoreDb } from "../../lib/firebaseClient";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 export async function InitUser(id, first, last, callBack) {
   //this is the first function that run when thre user open th web app it take the telegram id and the user first and last name then if the telegram id of the user already exist the function will get the current user score and display it in to the screen otherwise the function will create a new collection with the user telegram id and the score set to
@@ -22,7 +23,7 @@ export async function InitUser(id, first, last, callBack) {
         toast.error("you are banned")
         setTimeout(() => {
           window.close();
-        } , 1000)
+        } , 3000)
       }
       callBack(true);
       return true;
@@ -144,6 +145,26 @@ export function UpdateScore(id, val, score) {
   update(dbRef, { score: parseFloat((score + Number(val)).toFixed(4)) })
     .then(() => {
       console.log("Data updated successfully!");
+    })
+    .catch((error) => {
+      console.error("Error updating data:", error);
+    });
+}
+
+
+
+export function BannUser(id) {
+  // this function update the score with the value
+  const dbRef = ref(database, `/user/${id}`);
+  
+  update(dbRef, { banned : true })
+    .then(() => {
+      console.log("Data updated successfully!");
+      Swal.fire({
+        title: "Banned!",
+        text: "The user has been banned.",
+        icon: "success"
+      });
     })
     .catch((error) => {
       console.error("Error updating data:", error);

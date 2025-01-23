@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { auth } from "../../../lib/firebaseClient";
 import { AddTask, GetAllUsers, GetTask } from "../logic";
 import { signOut } from "firebase/auth";
+import Swal from "sweetalert2";
 function page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -76,6 +77,25 @@ function User() {
     GetAllUsers(setUsers);
   }, []);
 
+  function handleBann(val){
+    Swal.fire({
+      title: "Are you sure?",
+      text: `you want to bann ${val.firstName} ${val.lastName} !`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        BannUser(val.id)
+      }
+    });
+    
+  }
+
+
+
   return (
     <div className="w-full flex flex-col gap-4 py-6 h-full">
       {users.map((val, index) => {
@@ -85,13 +105,14 @@ function User() {
               {" "}
               {val.firstName} {val.lastName}{" "}
             </p>
-            <p className=" w-[30%] flex justify-center "> {val.id} </p>
+            <p className=" w-[26%] flex justify-center "> {val.id} </p>
             <p className=" w-[30%] flex justify-center ">
               {" "}
               <span className="p-2 bg-main text-white w-[80%] text-center rounded-xl ">
                 {val.score}
               </span>{" "}
             </p>
+            <button className="py-[10px] px-2 bg-main text-white " onClick={() => handleBann(val)} >Bann</button>
           </div>
         );
       })}
