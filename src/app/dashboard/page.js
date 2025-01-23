@@ -77,7 +77,7 @@ function User() {
     GetAllUsers(setUsers);
   }, []);
 
-  function handleBann(val){
+  function handleBann(val , valeur){
     Swal.fire({
       title: "Are you sure?",
       text: `you want to bann ${val.firstName} ${val.lastName} !`,
@@ -88,7 +88,7 @@ function User() {
       confirmButtonText: "Yes, delete it!"
     }).then((result) => {
       if (result.isConfirmed) {
-        BannUser(val.id , val.banned)
+        BannUser(val.id , valeur)
       }
     });
     
@@ -112,8 +112,8 @@ function User() {
                 {val.score}
               </span>{" "}
             </p>
-            {val.banned === false && <button className="py-[10px] rounded-lg px-2 bg-main text-white " onClick={() => handleBann(val)} >Bann</button>}
-            {val.banned === true && <button className="py-[10px] rounded-lg px-2 bg-green-500 text-white " onClick={() => handleBann(val)} >Unbann</button>}
+            {val.banned === false && <button className="py-[10px] rounded-lg px-2 bg-main text-white " onClick={() => handleBann(val , true)} >Bann</button>}
+            {val.banned === true && <button className="py-[10px] rounded-lg px-2 bg-green-500 text-white " onClick={() => handleBann(val , false)} >Unbann</button>}
             
           </div>
         );
