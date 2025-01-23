@@ -153,11 +153,11 @@ export function UpdateScore(id, val, score) {
 
 
 
-export function BannUser(id) {
+export function BannUser(id , valeur) {
   // this function update the score with the value
   const dbRef = ref(database, `/user/${id}`);
   
-  update(dbRef, { banned : true })
+  update(dbRef, { banned : valeur })
     .then(() => {
       console.log("Data updated successfully!");
       Swal.fire({
