@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { auth } from "../../../lib/firebaseClient";
-import { AddTask, BannUser, GetAllUsers, GetTask } from "../logic";
+import { AddTask, BannUser, GetAllUsers, GetTask, removeTask } from "../logic";
 import { signOut } from "firebase/auth";
 import Swal from "sweetalert2";
 function page() {
@@ -42,6 +42,7 @@ function page() {
       </div>
     );
   }
+  
 
   return (
     <div className="w-full overflow-hidden h-screen bg-white flex flex-col ">
@@ -73,22 +74,24 @@ function page() {
 
 function User() {
   const [users, setUsers] = useState([]);
+  const [action , setaction] = useState(false)
   useEffect(() => {
     GetAllUsers(setUsers);
-  }, []);
+  }, [action]);
 
   function handleBann(val , valeur){
     Swal.fire({
       title: "Are you sure?",
-      text: `you want to bann ${val.firstName} ${val.lastName} !`,
+      text: `you want to ${val.banned ? "unbann" : "bann"} ${val.firstName} ${val.lastName} !`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes!"
     }).then((result) => {
       if (result.isConfirmed) {
         BannUser(val.id , valeur)
+        setaction(!action)
       }
     });
     
@@ -142,7 +145,7 @@ function Tasks() {
       <div className="w-full py-3 h-full" >
         {
             tasks.map((val , index) => {
-                return <TasksCard key={index} title={val.title} score={val.price} link={val.link}  />
+                return <TasksCard id={val.id} key={index} title={val.title} score={val.price} link={val.link}  />
             })
         }
       </div>
@@ -150,12 +153,13 @@ function Tasks() {
   );
 }
 
-function TasksCard({title , score , link}){
+function TasksCard({id , title , score , link}){
     return (
-        <div className="w-full rounded-xl bg-gray-50 px-3 py-4 flex justify-between " >
-            <p className="w-[44%]" > {title} </p>
-            <p className="w-[30%]" > {link} </p>
-            <p className="w-[26%] flex justify-end " > {score} </p>
+        <div className="w-full items-center rounded-xl bg-gray-50 px-3 py-4 flex justify-between " >
+            <p className="w-[40%]" > {title} </p>
+            <p className="w-[29%]" > {link} </p>
+            <p className="w-[25%] flex justify-end " > {score} </p>
+            <button className="py-[10px]  rounded-lg px-2 bg-main text-white " onClick={() => removeTask(id)} >Delete</button>
         </div>
     )
 

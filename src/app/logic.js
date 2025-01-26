@@ -3,6 +3,7 @@ import { ref, set, onValue, push, update, get, child } from "firebase/database";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
@@ -161,8 +162,8 @@ export function BannUser(id , valeur) {
     .then(() => {
       console.log("Data updated successfully!");
       Swal.fire({
-        title: "Banned!",
-        text: "The user has been banned.",
+        title: "Action!",
+        text: "Check the user state.",
         icon: "success"
       });
     })
@@ -215,4 +216,23 @@ export async function AddTask(title, link, price, e) {
   } catch (err) {
     console.error("Error adding document: ", err);
   }
+}
+
+
+export async function removeTask(id) {
+
+  try {
+    const docRef = doc(fireStoreDb, "tasks", id);
+    await deleteDoc(docRef);
+    console.log(`Document with ID: ${id} has been deleted.`);
+    Swal.fire({
+      title: "Deleted!",
+      text: "task deleted succesfuly.",
+      icon: "success"
+    });
+  } catch (error) {
+    console.error("Error deleting document:", error);
+  }
+
+  
 }
